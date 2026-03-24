@@ -1,0 +1,53 @@
+<div class="results-container">
+    <h3>Resumo de Importação por Loja</h3>
+
+    {% for nome_loja, grupo in transacoes|groupby('nome_loja') %}
+    <div class="loja-card" style="margin-bottom: 2rem; border: 1px solid var(--border); padding: 1rem; border-radius: 8px;">
+        <div class="loja-header" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--bg); padding-bottom: 0.5rem;">
+            <strong style="font-size: 1.2rem;">{{ nome_loja }}</strong>
+            
+            {# Lógica de Cálculo de Saldo no Template (ou vindo do Backend) #}
+            {% set saldo = namespace(valor=0) %}
+            {% for t in grupo %}
+                {% if t.tipo in [1, 4, 5, 6, 7, 8] %}
+                    {% set saldo.valor = saldo.valor + t.valor %}
+                {% else %}
+                    {% set saldo.valor = saldo.valor - t.valor %}
+                {% endif %}
+            {% endfor %}
+
+            <span class="saldo-badge {% if saldo.valor >= 0 %}saldo-positivo{% else %}saldo-negativo{% endif %}">
+                Saldo Total: R$ {{ "%.2f"|format(saldo.valor) }}
+            </span>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Tipo</th>
+                    <th>CPF</th>
+                    <th>Cartão</th>
+                    <th>Valor</th>
+                    <th>Data/Hora</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for t in grupo %}
+                <tr>
+                    <td>
+                        <small>({{ t.tipo }})</small> 
+                        {% if t.tipo == 1 %}Débito{% elif t.tipo == 2 %}Boleto{% elif t.tipo == 3 %}Financiamento{% elif t.tipo == 4 %}Crédito{% elif t.tipo == 5 %}Recebimento Empréstimo{% elif t.tipo == 6 %}Vendas{% elif t.tipo == 7 %}Recebimento TED{% elif t.tipo == 8 %}Recebimento DOC{% elif t.tipo == 9 %}Aluguel{% endif %}
+                    </td>
+                    <td>{{ t.cpf }}</td>
+                    <td>{{ t.cartao }}</td>
+                    <td class="{% if t.tipo in [2, 3, 9] %}saldo-negativo{% endif %}">
+                        {% if t.tipo in [2, 3, 9] %}-{% endif %}R$ {{ "%.2f"|format(t.valor) }}
+                    </td>
+                    <td>{{ t.data.strftime('%d/%m/%Y') }} {{ t.hora }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endfor %}
+</div>
