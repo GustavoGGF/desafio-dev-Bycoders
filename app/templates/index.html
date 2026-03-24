@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Desafio CNAB - Importador</title>
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+    <link rel="stylesheet" href="/static/style.css" />
+  </head>
+  <body>
+    <header>
+      <h1>Importação de Dados CNAB</h1>
+    </header>
+
+    <main id="content">
+      <section class="upload-section">
+        <h2>Enviar Arquivo</h2>
+
+        <form
+          hx-post="/upload"
+          hx-target="#resultado-processamento"
+          hx-encoding="multipart/form-data"
+        >
+          <div class="file-input">
+            <input type="file" name="file" id="file-cnab" required />
+          </div>
+
+          <button type="submit" class="btn-import">
+            <span class="htmx-indicator">Processando...</span>
+            <span class="btn-text">Processar e Salvar</span>
+          </button> 
+        </form>
+      </section>
+
+      <hr />
+
+      <section id="resultado-processamento">
+        <p>Nenhum dado importado ainda.</p>
+      </section>
+    </main>
+
+    <footer style="margin-top: 2rem">
+      <small>Desenvolvido para o Desafio de Programação</small>
+    </footer>
+  </body>
+</html>
