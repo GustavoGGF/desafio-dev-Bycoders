@@ -1,6 +1,8 @@
 ## Sistema de Importação de Arquivos CNAB
 Este projeto é uma solução Fullstack para o processamento, persistência e visualização de dados provenientes de arquivos CNAB (largura fixa). A aplicação utiliza uma arquitetura moderna focada em performance e experiência do usuário (UX).
 
+---
+
 ## Tecnologias Utilizadas
 - **Backend**: Python 3.11+ com FastAPI.
 
@@ -14,6 +16,8 @@ Este projeto é uma solução Fullstack para o processamento, persistência e vi
 
 - **Segurança**: Autenticação com JWT (JSON Web Tokens).
 
+---
+
 ## Funcionalidades
 Segurança: Proteção de rotas e autenticação via JWT.
 
@@ -24,6 +28,8 @@ Persistência Atômica: Inserção de dados em lote (Batch) com Rollback automá
 Dashboard Dinâmica: Visualização de transações com atualização em tempo real via HTMX.
 
 Documentação Automática: Swagger UI disponível nativamente pelo FastAPI.
+
+---
 
 ## Como Executar o Projeto
 Pré-requisitos
@@ -53,6 +59,8 @@ docker exec -it cnab_db_container psql -U postgres -d cnab_db
 
 Consultar Dados:
 SELECT * FROM transacoes LIMIT 10;
+
+---
 
 ## Arquitetura de Software
 O projeto foi desenhado para ser resiliente:
