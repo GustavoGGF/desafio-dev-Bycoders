@@ -6,6 +6,21 @@
     <title>Desafio CNAB - Importador</title>
     <script src="https://unpkg.com/htmx.org@1.9.10"></script>
     <link rel="stylesheet" href="/static/style.css" />
+    <script>
+      if (!localStorage.getItem('access_token') && window.location.pathname !== '/login') {
+            window.location.href = '/login';
+        }
+      function refreshList() {
+            const container = document.querySelector('#resultado-processamento');
+            if (container) {
+                htmx.trigger(container, 'refresh');
+            }
+        }
+
+      document.addEventListener("DOMContentLoaded", () => {
+          refreshList();
+      }); 
+    </script>
   </head>
   <body>
     <header>
@@ -13,6 +28,8 @@
     </header>
 
     <main id="content">
+      {% block content %}{% endblock %} 
+    </main>
       <section class="upload-section">
         <h2>Enviar Arquivo</h2>
 
@@ -20,6 +37,7 @@
           hx-post="/upload"
           hx-target="#resultado-processamento"
           hx-encoding="multipart/form-data"
+          hx-on::after-request="if(event.detail.successful) this.reset()"
         >
           <div class="file-input">
             <input type="file" name="file" id="file-cnab" required />
@@ -34,13 +52,37 @@
 
       <hr />
 
-      <section id="resultado-processamento">
-        <p>Nenhum dado importado ainda.</p>
-      </section>
+     <div id="resultado-processamento" 
+             hx-get="/get-list" 
+             hx-trigger="load, refresh" 
+             hx-target="this"
+             class="table-container">
+             <p>Carregando transações...</p>
+      </div>
     </main>
 
     <footer style="margin-top: 2rem">
       <small>Desenvolvido para o Desafio de Programação</small>
     </footer>
+    <script>
+
+      function refreshList() {
+            const container = document.querySelector('#resultado-processamento');
+            if (container) {
+                htmx.trigger(container, 'refresh');
+            }
+      }
+
+      document.body.addEventListener('htmx:afterRequest', function(evt) {
+          if (evt.detail.pathInfo.requestPath === "/upload") {
+              if (evt.detail.successful) {
+                  evt.detail.elt.reset(); 
+                  refreshList();          
+              } else {
+                  console.warn("Falha no upload. Status:", evt.detail.xhr.status);
+              }
+          }
+      });
+    </script>
   </body>
 </html>
