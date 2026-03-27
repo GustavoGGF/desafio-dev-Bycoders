@@ -1,0 +1,50 @@
+name: desafio
+
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: cnab_db_container
+    hostname: db
+    networks:
+      cnab_network:
+        aliases:
+          - db
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=cnab_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d cnab_db"]
+      interval: 5s
+      timeout: 10s
+      retries: 10
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.desafio
+    container_name: fastapi_app
+    networks:
+      cnab_network:
+        aliases:
+          - web
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    depends_on:
+      db:
+        condition: service_healthy
+    links:
+      - db:db
+
+networks:
+  cnab_network:
+    driver: bridge
+
+volumes:
+  postgres_data:
