@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | Importador CNAB Bycoders</title>
+    <link rel="stylesheet" href="/static/style.css"> <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+</head>
+<body class="login-body">
+    <div class="login-container">
+        <div class="login-header">
+            <h1>Acessar Sistema</h1>
+            <p>Entre com suas credenciais para gerenciar arquivos CNAB</p>
+        </div>
+
+        <form hx-post="/auth" 
+              hx-target="#error-message" 
+              hx-swap="innerHTML"
+              class="login-form">
+            
+            <div class="form-group">
+                <label for="username">Usuário</label>
+                <input type="text" id="username" name="username" placeholder="Seu usuário" required>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Senha</label>
+                <input type="password" id="password" name="password" placeholder="Sua senha" required>
+            </div>
+
+            <button type="submit" class="btn-login">
+                Entrar
+            </button>
+        </form>
+
+        <div id="error-message" class="error-container"></div>
+
+        <div class="login-footer">
+            <p>© 2026 Bycoders - Sistema de Importação de CNAB</p>
+        </div>
+    </div>
+
+    <script>
+        document.body.addEventListener('htmx:afterRequest', (event) => {
+            if (event.detail.xhr.status === 200) {
+                const response = JSON.parse(event.detail.xhr.response);
+                localStorage.setItem('access_token', response.access_token);
+                window.location.href = '/home';
+            } else{
+                console.warn("Usuário e/ou Senha incorreto.");
+            }
+        });
+    </script>
+</body>
+</html>
