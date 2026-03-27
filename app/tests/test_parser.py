@@ -1,7 +1,8 @@
 from datetime import date, time
 from io import BytesIO
 
-from app.main import parse_cnab_stream as cnab_parser, TransacaoBase
+from app.schemas import TransacaoBase
+from app.parser import parse_cnab_stream as cnab_parser
 from typing import BinaryIO, Generator, cast
 
 def test_parse_cnab_valid_line():
